@@ -1,0 +1,7 @@
+parameters:
+#    saa_s_info_manager_auth.example.class: SaaSInfoManager\Bundle\AuthBundle\Example
+
+services:
+#    saa_s_info_manager_auth.example:
+#        class: %saa_s_info_manager_auth.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

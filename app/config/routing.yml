@@ -1,0 +1,12 @@
+saa_s_info_manager_core:
+    resource: "@SaaSInfoManagerCoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
+saa_s_info_manager_info_manager:
+    resource: "@SaaSInfoManagerInfoManagerBundle/Resources/config/routing.yml"
+    prefix:   /
+
+saa_s_info_manager_auth:
+    resource: "@SaaSInfoManagerAuthBundle/Resources/config/routing.yml"
+    prefix:   /
+

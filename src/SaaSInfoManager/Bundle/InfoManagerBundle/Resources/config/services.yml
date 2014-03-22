@@ -1,0 +1,7 @@
+parameters:
+    saas_info_manager.client_service.class: SaaSInfoManager\Bundle\InfoManagerBundle\Service\ClientService
+
+services:
+    saas_info_manager.client_service:
+        class: %saas_info_manager.client_service.class%
+        arguments: []

@@ -1,0 +1,7 @@
+parameters:
+#    saa_s_info_manager_core.example.class: SaaSInfoManager\Bundle\CoreBundle\Example
+
+services:
+#    saa_s_info_manager_core.example:
+#        class: %saa_s_info_manager_core.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
