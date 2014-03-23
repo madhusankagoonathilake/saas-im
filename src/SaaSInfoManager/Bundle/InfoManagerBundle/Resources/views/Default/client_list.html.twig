@@ -2,8 +2,43 @@
 
 {% block content %}
 
-{% for client in clientList %}
-{{ client }}
-{% endfor %}
+<div class="page-header row">
 
+    <div class="col-md-2 h3">
+        <span class="glyphicon glyphicon-user"></span>
+        <span>Clients</span>
+    </div>
+    <div class="col-md-2 h3">
+        <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-plus"></span>
+            Add
+        </button>
+    </div>
+
+</div>
+
+<div class="list-group">
+
+    <input type="text" class="form-control" placeholder="Search..." />
+    <br />
+
+{% if clientList|length > 0 %}
+    {% for client in clientList %}
+
+    <a href="#" class="list-group-item">
+        <span class="h4 list-group-item-heading">Client {{ client }}</span>
+        <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
+        <p class="list-group-item-text">...</p>
+    </a>
+
+    {% endfor %}
+{% else %}
+    <div class="list-group">
+        <a href="#" class="list-group-item info">
+            <h4 class="list-group-item-heading">No clients found.</h4>
+            <p class="list-group-item-text">Click on "Add Client" button to add new clients.</p>
+        </a>
+    </div>
+{% endif %}
+</div>
 {% endblock %}
