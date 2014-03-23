@@ -12,9 +12,6 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
         name:
             type: string
             length: '100'
-        description:
-            type: string
-            length: '200'
         email:
             type: string
             length: '100'

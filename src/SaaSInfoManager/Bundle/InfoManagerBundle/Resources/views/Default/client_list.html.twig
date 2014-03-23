@@ -4,41 +4,72 @@
 
 <div class="page-header row">
 
-    <div class="col-md-2 h3">
+    <div class="col-lg-12 h3">
         <span class="glyphicon glyphicon-user"></span>
         <span>Clients</span>
-    </div>
-    <div class="col-md-2 h3">
         <button class="btn btn-primary">
             <span class="glyphicon glyphicon-plus"></span>
             Add
         </button>
     </div>
-
 </div>
 
-<div class="list-group">
+<div class="col-lg-4">
+    <div class="list-group">
 
-    <input type="text" class="form-control" placeholder="Search..." />
-    <br />
+        <input type="text" id="search" class="form-control" placeholder="Search..." autocomplete="off" />
+        <br />
 
 {% if clientList|length > 0 %}
     {% for client in clientList %}
 
-    <a href="#" class="list-group-item">
-        <span class="h4 list-group-item-heading">Client {{ client }}</span>
-        <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
-        <p class="list-group-item-text">...</p>
-    </a>
+        <input type="hidden" class="search-index" value="{{ client|lower }}" />
+
+        <a href="#" class="list-group-item data-item">
+
+            <span class="h4 list-group-item-heading">Client {{ client }}</span>
+            <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
+            <p class="list-group-item-text">...</p>
+        </a>
 
     {% endfor %}
-{% else %}
-    <div class="list-group">
-        <a href="#" class="list-group-item info">
-            <h4 class="list-group-item-heading">No clients found.</h4>
-            <p class="list-group-item-text">Click on "Add Client" button to add new clients.</p>
+        <a href="#" class="list-group-item list-group-item-info" id="noResultsNotice">
+            <h4 class="list-group-item-heading">No matching results.</h4>
+            <p class="list-group-item-text">Try a differnt search.</p>
         </a>
-    </div>
+
+{% else %}
+        <a href="#" class="list-group-item list-group-item-info">
+            <h4 class="list-group-item-heading">No clients found.</h4>
+            <p class="list-group-item-text">Click the "Add" button to add new clients.</p>
+        </a>
 {% endif %}
+    </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#noResultsNotice').hide();
+
+        $('#search').on('keyup', function() {
+            var key = $(this).val();
+
+            $('.search-index').each(function() {
+                if ($(this).val().toLowerCase().indexOf(key) == -1) {
+                    $(this).next().hide();
+                } else {
+                    $(this).next().show();
+                }
+            });
+
+            if ($('.data-item:visible').size() == 0) {
+                $('#noResultsNotice').show();
+            } else {
+                $('#noResultsNotice').hide();
+            }
+        })
+    });
+</script>
 {% endblock %}
