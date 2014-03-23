@@ -1,6 +1,6 @@
 SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
     type: entity
-    table: null
+    table: client
     repositoryClass: SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository
     id:
         id:

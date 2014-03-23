@@ -4,3 +4,6 @@ saas_info_manager_client_list:
 saas_info_manager_commodity_list:
     pattern:  /commodity-list
     defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:viewCommodityList }
+SaaSInfoManagerInfoManagerBundle_client:
+    resource: "@SaaSInfoManagerInfoManagerBundle/Resources/config/routing/client.yml"
+    prefix:   /client

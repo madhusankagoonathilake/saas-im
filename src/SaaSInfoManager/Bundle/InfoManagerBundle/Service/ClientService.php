@@ -12,7 +12,11 @@ class ClientService {
      * @return array
      */
     public function getClientList(SearchParamObject $searchParams = null) {
-        return array(1, 2, 3);
+        $em = $this->getDoctrine()->getManager();
+
+        $entities = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->findAll();
+
+        return $entities;
     }
 
 }

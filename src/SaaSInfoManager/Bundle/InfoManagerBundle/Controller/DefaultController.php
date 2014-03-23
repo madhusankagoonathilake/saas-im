@@ -20,10 +20,14 @@ class DefaultController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function viewCompanyListAction() {
-        $service = $this->get('saas_info_manager.client_service');
-        $clientList = $service->getClientList();
+//        $service = $this->get('saas_info_manager.client_service');
+//        $clientList = $service->getClientList();
+                $em = $this->getDoctrine()->getManager();
+
+        $entities = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->findAll();
+
         return $this->render('SaaSInfoManagerInfoManagerBundle:Default:client_list.html.twig', array(
-                    'clientList' => $clientList,
+                    'clientList' => $entities,
         ));
     }
 

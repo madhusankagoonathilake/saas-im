@@ -23,13 +23,21 @@
 {% if clientList|length > 0 %}
     {% for client in clientList %}
 
-        <input type="hidden" class="search-index" value="{{ client|lower }}" />
+        <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.countryId }}" />
 
         <a href="#" class="list-group-item data-item">
 
-            <span class="h4 list-group-item-heading">Client {{ client }}</span>
+            <span class="h4 list-group-item-heading">{{ client.name }}</span>
             <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
-            <p class="list-group-item-text">...</p>
+            <p class="list-group-item-text small">
+                <span class="glyphicon glyphicon-phone-alt small"></span>
+                <span>{{ client.contactNumber }}</span>
+                <span class="glyphicon glyphicon-envelope small"></span>
+                <span>{{ client.email }}</span>
+                <br />
+                <span class="glyphicon glyphicon-globe small"></span>
+                <span>{{ client.countryId }}</span>
+            </p>
         </a>
 
     {% endfor %}
@@ -69,6 +77,10 @@
             } else {
                 $('#noResultsNotice').hide();
             }
+        });
+        
+        $('.list-group-item data-item').on('click', function() {
+            $(this).addClass('active');
         })
     });
 </script>
