@@ -23,7 +23,7 @@
 {% if clientList|length > 0 %}
     {% for client in clientList %}
 
-        <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.countryId }}" />
+        <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.country.name }}" />
 
         <a href="#" class="list-group-item data-item">
 
