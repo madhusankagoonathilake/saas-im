@@ -31,4 +31,7 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
         countryId:
             type: integer
             column: country_id
+    manyToOne:
+        country:
+          targetEntity: SaaSInfoManager\Bundle\CoreBundle\Entity\Country
     lifecycleCallbacks: {  }

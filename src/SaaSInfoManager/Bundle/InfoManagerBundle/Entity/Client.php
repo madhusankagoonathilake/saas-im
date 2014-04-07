@@ -220,4 +220,32 @@ class Client
     {
         return $this->countryId;
     }
+    /**
+     * @var \SaaSInfoManager\Bundle\CoreBundle\Entity\Country
+     */
+    private $country;
+
+
+    /**
+     * Set country
+     *
+     * @param \SaaSInfoManager\Bundle\CoreBundle\Entity\Country $country
+     * @return Client
+     */
+    public function setCountry(\SaaSInfoManager\Bundle\CoreBundle\Entity\Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \SaaSInfoManager\Bundle\CoreBundle\Entity\Country 
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
 }
