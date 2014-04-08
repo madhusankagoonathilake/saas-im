@@ -248,4 +248,32 @@ class Client
     {
         return $this->country;
     }
+    /**
+     * @var string
+     */
+    private $countryCode;
+
+
+    /**
+     * Set countryCode
+     *
+     * @param string $countryCode
+     * @return Client
+     */
+    public function setCountryCode($countryCode)
+    {
+        $this->countryCode = $countryCode;
+
+        return $this;
+    }
+
+    /**
+     * Get countryCode
+     *
+     * @return string 
+     */
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
 }

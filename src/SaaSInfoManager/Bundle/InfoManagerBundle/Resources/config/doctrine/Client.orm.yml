@@ -28,10 +28,14 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
         city:
             type: string
             length: '100'
-        countryId:
-            type: integer
-            column: country_id
+        countryCode:
+            type: string
+            length: '2'
+            column: country_code
     manyToOne:
         country:
           targetEntity: SaaSInfoManager\Bundle\CoreBundle\Entity\Country
+          joinColumn:
+            name: country_code
+            referencedColumnName: code
     lifecycleCallbacks: {  }

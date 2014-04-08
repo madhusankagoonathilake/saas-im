@@ -25,7 +25,7 @@
 
         <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.country.name }}" />
 
-        <a href="#" class="list-group-item data-item">
+        <a href="#" class="list-group-item data-item load-via-ajax">
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
             <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
@@ -54,9 +54,54 @@
 {% endif %}
     </div>
 </div>
+
+<div class="col-lg-4">
+{{ form_start(clientForm, { 'attr': { 'role': 'form' } }) }}
+{{ form_widget(clientForm._token) }}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 id="clientName" class="panel-title">{{ form_widget(clientForm.name, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Client Name'|trans } }) }}</h3>
+        </div>
+        <div class="panel-body">
+            {{ form_row(clientForm.email, { 'label': 'Email'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Email Address'|trans } }) }}
+            {{ form_row(clientForm.contactNumber, { 'label': 'Contact Number'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Contact Number'|trans } }) }}
+            {{ form_row(clientForm.address1, { 'label': 'Address'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 1'|trans } }) }}
+            {{ form_widget(clientForm.address2, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 2'|trans } }) }}
+            {{ form_widget(clientForm.city, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'City'|trans } }) }}
+            {{ form_row(clientForm.countryCode, { 'label': 'Country'|trans, 'attr': { 'class': 'form-control editable editable-style' } }) }}
+        </div>
+        <div class="panel-footer">
+            <div class="">
+            {{ form_row(clientForm.submit, { 'attr' : { 'class': 'btn btn-primary disabled' } }) }}
+            </div>
+        </div>
+    </div>
+
+{{ form_end(clientForm, { 'render_rest': false }) }}
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 id="contacts" class="panel-title">Contacts</h3>
+
+        </div>
+        <div class="panel-body">
+            Panel content
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
+<style type="text/css">
+    .editable-style {
+        border-color: transparent;
+        background-color: transparent;
+        box-shadow: none;
+    }
+</style>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#noResultsNotice').hide();
@@ -65,23 +110,43 @@
             var key = $(this).val();
 
             $('.search-index').each(function() {
-                if ($(this).val().toLowerCase().indexOf(key) == -1) {
+                if ($(this).val().toLowerCase().indexOf(key) === -1) {
                     $(this).next().hide();
                 } else {
                     $(this).next().show();
                 }
             });
 
-            if ($('.data-item:visible').size() == 0) {
+            if ($('.data-item:visible').size() === 0) {
                 $('#noResultsNotice').show();
             } else {
                 $('#noResultsNotice').hide();
             }
+        }).on('keydown', function(e) {
+
+        });
+
+        $('a.data-item').on('click', function() {
+            highlight($(this));
         });
         
-        $('.list-group-item data-item').on('click', function() {
-            $(this).addClass('active');
-        })
+        $('.editable').on('mouseover', function() {
+            $(this).removeClass('editable-style');
+        }).on('mouseout', function() {
+            $(this).addClass('editable-style');
+        }).on('focus', function() {
+            $(this).addClass('editable-style');
+        }).on('blur', function() {
+            $(this).addClass('editable-style');
+        }).on('change', function() {
+            $('button').removeClass('disabled');
+        });
+
     });
+
+    function highlight(obj) {
+        obj.siblings('a').removeClass('active');
+        obj.addClass('active');
+    }
 </script>
 {% endblock %}

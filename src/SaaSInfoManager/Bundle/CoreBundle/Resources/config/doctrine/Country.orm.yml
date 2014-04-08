@@ -3,8 +3,9 @@ SaaSInfoManager\Bundle\CoreBundle\Entity\Country:
     table: country
     repositoryClass: SaaSInfoManager\Bundle\CoreBundle\Entity\CountryRepository
     id:
-        id:
-            type: integer
+        code:
+            type: string
+            legnth: '2'
             id: true
             generator:
                 strategy: AUTO
@@ -12,7 +13,4 @@ SaaSInfoManager\Bundle\CoreBundle\Entity\Country:
         name:
             type: string
             length: '150'
-        code:
-            type: string
-            length: '2'
     lifecycleCallbacks: {  }
