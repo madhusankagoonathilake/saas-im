@@ -40,6 +40,6 @@ class ClientType extends AbstractType
      */
     public function getName()
     {
-        return 'saasinfomanager_bundle_infomanagerbundle_client';
+        return 'saas_im_client_form';
     }
 }

@@ -25,7 +25,7 @@
 
         <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.country.name }}" />
 
-        <a href="#" class="list-group-item data-item load-via-ajax">
+        <a href="{{ path('saas_info_manager_client_info', { 'id': client.id }) }}" class="list-group-item data-item load-via-ajax" data-target="saas_im_client_form">
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
             <button type="button" class="close" aria-hidden="true" title="Delete">&times;</button>
@@ -101,6 +101,11 @@
         background-color: transparent;
         box-shadow: none;
     }
+
+    .panel-title input {
+        font-weight: bold;
+        font-size: larger;
+    }
 </style>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -129,7 +134,7 @@
         $('a.data-item').on('click', function() {
             highlight($(this));
         });
-        
+
         $('.editable').on('mouseover', function() {
             $(this).removeClass('editable-style');
         }).on('mouseout', function() {
@@ -140,6 +145,16 @@
             $(this).addClass('editable-style');
         }).on('change', function() {
             $('button').removeClass('disabled');
+        });
+
+        $('.load-via-ajax').on('click', function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $.getJSON($(this).attr('href'), null, function(object) {
+                $.each(object, function(property, value) {
+                    $('#' + target + '_' + property).val(value);
+                });
+            });
         });
 
     });
