@@ -5,31 +5,38 @@ namespace SaaSInfoManager\Bundle\InfoManagerBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-class ClientType extends AbstractType
-{
-        /**
+class ClientType extends AbstractType {
+
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('name')
-            ->add('email', 'email')
-            ->add('contactNumber')
-            ->add('address1')
-            ->add('address2')
-            ->add('city')
-            ->add('countryCode', 'country')
+                ->add('name', 'text', array(
+                    'constraints' => array(
+                        new Length(array('min' => 3, 'max' => 100)),
+                        new NotBlank(),
+                    ),
+                ))
+                ->add('email', 'email')
+                ->add('contactNumber')
+                ->add('address1')
+                ->add('address2')
+                ->add('city')
+                ->add('countryCode', 'country', array(
+                    'empty_value' => '---'
+                ))
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
+    public function setDefaultOptions(OptionsResolverInterface $resolver) {
         $resolver->setDefaults(array(
             'data_class' => 'SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client'
         ));
@@ -38,8 +45,8 @@ class ClientType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return 'saas_im_client_form';
     }
+
 }

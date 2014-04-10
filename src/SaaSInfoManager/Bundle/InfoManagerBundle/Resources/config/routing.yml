@@ -4,6 +4,10 @@ saas_info_manager_client_list:
 saas_info_manager_client_info:
     pattern:  /client/{id}
     defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:viewClient }
+saas_info_manager_save_client:
+    pattern:  /save-client
+    defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:saveClient }
+    requirements: { _method: post|put }
 saas_info_manager_commodity_list:
     pattern:  /commodity-list
     defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:viewCommodityList }
