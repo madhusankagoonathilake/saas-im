@@ -61,6 +61,7 @@
             <h3 id="clientName" class="panel-title">{{ form_widget(clientForm.name, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Client Name'|trans } }) }}</h3>
         </div>
         <div class="panel-body">
+            <div class="alert"></div>
             {{ form_row(clientForm.email, { 'label': 'Email'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Email Address'|trans } }) }}
             {{ form_row(clientForm.contactNumber, { 'label': 'Contact Number'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Contact Number'|trans } }) }}
             {{ form_row(clientForm.address1, { 'label': 'Address'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 1'|trans } }) }}
@@ -80,7 +81,7 @@
 <div class="col-lg-4">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 id="contacts" class="panel-title">Contacts</h3>
+            <h3 id="contacts" class="panel-title">{{ 'Contacts'|trans }}</h3>
 
         </div>
         <div class="panel-body">
@@ -102,6 +103,10 @@
     .panel-title input {
         font-weight: bold;
         font-size: larger;
+    }
+
+    .alert-heading {
+        padding-left: 4%;
     }
 </style>
 <script type="text/javascript">
@@ -162,13 +167,36 @@
         $('#saas_im_client_form').data('enitity_id', '');
         $('#saas_im_client_form input[type="text"]:first').trigger('focus');
     });
-    
+
+    $('.alert').hide();
+
     $('.submit-via-ajax').on('submit', function(e) {
         e.preventDefault();
         var data = $(this).serialize() + '&entityId=' + $(this).data('enitity_id');
-        
+
         $.post($(this).attr('action'), data, function(object) {
-            
+            var container = $('#saas_im_client_form').find('.alert');
+            var alertHeading, containerClass, iconClass;
+
+            if (object.type === 'success') {
+                alertHeading = '{{'Success'|trans}}';
+                containerClass = 'alert-success';
+                iconClass = 'glyphicon-ok';
+            } else if (object.type === 'failure') {
+                alertHeading = '{{'Failure'|trans}}';
+                containerClass = 'alert-danger';
+                iconClass = 'glyphicon-remove';
+            }
+
+            container
+                    .html('')
+                    .append($('<h4>').append($('<div>').addClass('glyphicon ' + iconClass)).append($('<span>').addClass('alert-heading').html(alertHeading)))
+                    .append($('<p>').html(object.content))
+                    .addClass(containerClass)
+                    .fadeIn(400)
+                    .delay(4800)
+                    .fadeOut(1000)
+                    ;
         }, 'json');
     });
 

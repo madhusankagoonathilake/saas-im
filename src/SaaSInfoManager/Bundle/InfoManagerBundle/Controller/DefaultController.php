@@ -4,6 +4,7 @@ namespace SaaSInfoManager\Bundle\InfoManagerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use \SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client;
+use SaaSInfoManager\Bundle\CoreBundle\Entity\TemplateMessage;
 use \SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientType;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -45,12 +46,7 @@ class DefaultController extends Controller {
     public function viewClientAction($id) {
         $em = $this->getDoctrine()->getManager();
         $client = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->find($id);
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
-
-        $serializer = new Serializer($normalizers, $encoders);
-        $reports = $serializer->serialize($client, 'json');
-        return new Response($reports);
+        return new Response($this->serialize($client));
     }
 
     /**
@@ -63,12 +59,12 @@ class DefaultController extends Controller {
         $em = $this->getDoctrine()->getManager();
 
         $entityId = $request->get('entityId');
-        
+
         $client = empty($entityId) ? new Client() : $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->find($entityId);
-        
+
         $clientForm = $this->createClientForm($client);
         $clientForm->handleRequest($request);
-        
+
         if ($clientForm->isValid()) {
 
             $country = $em->getRepository('SaaSInfoManagerCoreBundle:Country')->find($client->getCountryCode());
@@ -77,12 +73,12 @@ class DefaultController extends Controller {
             $em->persist($client);
             $em->flush();
 
-            $message = 'success';
+            $message = new TemplateMessage('success', 'Client details saved');
         } else {
-            $message = $clientForm->getErrorsAsString();
+            $message = new TemplateMessage('error', 'Failed to save client');
         }
 
-        return new Response(json_encode($message));
+        return new Response($this->serialize($message));
     }
 
     /**
@@ -110,6 +106,18 @@ class DefaultController extends Controller {
         $clientForm->add('submit', 'submit', array('label' => 'Save'));
 
         return $clientForm;
+    }
+
+    /**
+     * @todo Move this to a service
+     * @param type $content
+     */
+    protected function serialize($content) {
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+        return $serializer->serialize($content, 'json');
     }
 
 }
