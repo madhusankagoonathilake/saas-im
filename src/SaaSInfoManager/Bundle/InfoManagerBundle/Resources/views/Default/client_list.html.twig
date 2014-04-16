@@ -14,7 +14,7 @@
 <div class="col-lg-4">
     <div class="list-group">
 
-        <input type="text" id="search" class="form-control" placeholder="{{ 'Search...'|trans }}" autocomplete="off" />
+        <input type="text" id="search" class="form-control" placeholder="{{ 'Search'|trans }}&hellip;" autocomplete="off" />
         <br />
 
 {% if clientList|length > 0 %}
@@ -25,7 +25,7 @@
         <a href="{{ path('saas_info_manager_client_info', { 'id': client.id }) }}" class="list-group-item data-item load-via-ajax" data-target="saas_im_client_form">
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
-            <button type="button" class="close" aria-hidden="true" title="{{ 'Delete'|trans }}">&times;</button>
+            <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal">&times;</button>
             <p class="list-group-item-text small">
                 <span class="glyphicon glyphicon-phone-alt small"></span>
                 <span>{{ client.contactNumber }}</span>
@@ -88,6 +88,30 @@
             Panel content
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="clientDeactivationModal">
+    {{ form_start(clientDeactivationForm, { 'attr': { 'role': 'form', 'class': 'submit-via-ajax' } }) }}
+    {{ form_widget(clientDeactivationForm._token) }}
+    {{ form_widget(clientDeactivationForm.id) }}
+    
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{ 'Confirm Client Deactivation'|trans }}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{ 'Do you really want to deactivate this client?'|trans }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                {{ form_widget(clientDeactivationForm.submit, { 'label': 'Confirm Deactivation'|trans, 'attr': { 'class': 'btn btn-danger' } } ) }}
+            </div>
+        </div>
+    </div>
+    
+    {{ form_end(clientDeactivationForm, { 'render_rest': false }) }}
 </div>
 
 {% endblock %}
@@ -198,6 +222,10 @@
                     .fadeOut(1000)
                     ;
         }, 'json');
+
+        $('.deactivateClient').on('click', function() {
+            alert('aaa');
+        });
     });
 
     function highlight(obj) {
