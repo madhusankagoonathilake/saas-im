@@ -276,4 +276,32 @@ class Client
     {
         return $this->countryCode;
     }
+    /**
+     * @var integer
+     */
+    private $status;
+
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     * @return Client
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 }

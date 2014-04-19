@@ -3,9 +3,10 @@
 namespace SaaSInfoManager\Bundle\InfoManagerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use \SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client;
+use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client;
+use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository;
 use SaaSInfoManager\Bundle\CoreBundle\Entity\TemplateMessage;
-use \SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientType;
+use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientType;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientDeactivationType;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -32,19 +33,17 @@ class DefaultController extends Controller {
         $em = $this->getDoctrine()->getManager();
 
         $clientForm = $this->createClientForm();
-        $clientDeactivationForm = $this->createForm(new ClientDeactivationType(), null, array(
-            'action' => $this->generateUrl('saas_info_manager_deactivate_client'),
-            'method' => 'POST',
-            'attr' => array(
-                'id' => 'saas_im_client_deactivation_form',
-            ),
+        $clientDeactivationForm = $this->createClientDeactivationForm();
+        $clientList = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->findBy(array(
+            'status' => ClientRepository::ACTIVE,
+        ), array(
+            'name' => 'ASC',
         ));
-        $clientList = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->findAll();
 
         return $this->render('SaaSInfoManagerInfoManagerBundle:Default:client_list.html.twig', array(
                     'clientList' => $clientList,
                     'clientForm' => $clientForm->createView(),
-            'clientDeactivationForm' => $clientDeactivationForm->createView(),
+                    'clientDeactivationForm' => $clientDeactivationForm->createView(),
         ));
     }
 
@@ -89,9 +88,34 @@ class DefaultController extends Controller {
 
         return new Response($this->serialize($message));
     }
-    
-    public function deactivateClientAction() {
-        
+
+    /**
+     * 
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deactivateClientAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entityId = $request->get('entityId');
+
+        $clientDeactivationForm = $this->createClientDeactivationForm();
+        $clientDeactivationForm->handleRequest($request);
+
+        if (!empty($entityId) && $clientDeactivationForm->isValid()) {
+            $client = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->find($entityId);
+
+            $client->setStatus(ClientRepository::INACTIVE);
+
+            $em->persist($client);
+            $em->flush();
+
+            $message = new TemplateMessage('success', 'Client deactivated');
+        } else {
+            $message = new TemplateMessage('error', 'Failed to deactivate client');
+        }
+
+        return new Response($this->serialize($message));
     }
 
     /**
@@ -119,6 +143,22 @@ class DefaultController extends Controller {
         $clientForm->add('submit', 'submit', array('label' => 'Save'));
 
         return $clientForm;
+    }
+    
+    /**
+     * 
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function createClientDeactivationForm() {
+        $clientDeactivationForm = $this->createForm(new ClientDeactivationType(), null, array(
+            'action' => $this->generateUrl('saas_info_manager_deactivate_client'),
+            'method' => 'POST',
+            'attr' => array(
+                'id' => 'saas_im_client_deactivation_form',
+            ),
+        ));
+        
+        return $clientDeactivationForm;
     }
 
     /**

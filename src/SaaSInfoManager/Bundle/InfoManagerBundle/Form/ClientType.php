@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository;
 
 class ClientType extends AbstractType {
 
@@ -29,6 +30,9 @@ class ClientType extends AbstractType {
                 ->add('city')
                 ->add('countryCode', 'country', array(
                     'empty_value' => '---'
+                ))
+                ->add('status', 'hidden', array(
+                    'data' => ClientRepository::ACTIVE
                 ))
         ;
     }

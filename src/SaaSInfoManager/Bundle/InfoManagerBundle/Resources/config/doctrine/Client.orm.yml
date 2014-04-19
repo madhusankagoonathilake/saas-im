@@ -32,6 +32,9 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
             type: string
             length: '2'
             column: country_code
+        status:
+            type: integer
+            default: 1
     manyToOne:
         country:
           targetEntity: SaaSInfoManager\Bundle\CoreBundle\Entity\Country

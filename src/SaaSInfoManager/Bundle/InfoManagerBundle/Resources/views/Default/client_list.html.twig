@@ -22,10 +22,10 @@
 
         <input type="hidden" class="search-index" value="{{ client.name|lower }} {{ client.email|lower }} {{ client.country.name }}" />
 
-        <a href="{{ path('saas_info_manager_client_info', { 'id': client.id }) }}" class="list-group-item data-item load-via-ajax" data-target="saas_im_client_form">
+        <a href="{{ path('saas_info_manager_client_info', { 'id': client.id }) }}" class="list-group-item search-list-item load-via-ajax" data-target="saas_im_client_form">
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
-            <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal">&times;</button>
+            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="{{ client.id }}">&times;</button>
             <p class="list-group-item-text small">
                 <span class="glyphicon glyphicon-phone-alt small"></span>
                 <span>{{ client.contactNumber }}</span>
@@ -53,8 +53,9 @@
 </div>
 
 <div class="col-lg-4">
-{{ form_start(clientForm, { 'attr': { 'role': 'form', 'data-enitity_id': '', 'class': 'submit-via-ajax' } }) }}
+{{ form_start(clientForm, { 'attr': { 'role': 'form', 'data-entity_id': '', 'data-originator': 'self', 'class': 'submit-via-ajax' } }) }}
 {{ form_widget(clientForm._token) }}
+{{ form_widget(clientForm.status) }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -91,10 +92,10 @@
 </div>
 
 <div class="modal fade" id="clientDeactivationModal">
-    {{ form_start(clientDeactivationForm, { 'attr': { 'role': 'form', 'class': 'submit-via-ajax' } }) }}
+    {{ form_start(clientDeactivationForm, { 'attr': { 'role': 'form', 'data-entity_id': '', 'data-originator': '#clientDeactivationModal', 'class': 'submit-via-ajax' } }) }}
     {{ form_widget(clientDeactivationForm._token) }}
     {{ form_widget(clientDeactivationForm.id) }}
-    
+
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -110,7 +111,7 @@
             </div>
         </div>
     </div>
-    
+
     {{ form_end(clientDeactivationForm, { 'render_rest': false }) }}
 </div>
 
@@ -148,7 +149,7 @@
                 }
             });
 
-            if ($('.data-item:visible').size() === 0) {
+            if ($('.search-list-item:visible').size() === 0) {
                 $('#noResultsNotice').show();
             } else {
                 $('#noResultsNotice').hide();
@@ -157,7 +158,7 @@
 
         });
 
-        $('a.data-item').on('click', function() {
+        $('a.search-list-item').on('click', function() {
             highlight($(this));
         });
 
@@ -180,52 +181,61 @@
                 $.each(object, function(property, value) {
                     $('#' + target + '_' + property).val(value);
                 });
-                $('#' + target).data('enitity_id', object.id);
+                $('#' + target).data('entity_id', object.id);
             });
         });
 
-    });
-
-    $('#add').on('click', function() {
-        $('#saas_im_client_form').trigger('reset');
-        $('#saas_im_client_form').data('enitity_id', '');
-        $('#saas_im_client_form input[type="text"]:first').trigger('focus');
-    });
-
-    $('.alert').hide();
-
-    $('.submit-via-ajax').on('submit', function(e) {
-        e.preventDefault();
-        var data = $(this).serialize() + '&entityId=' + $(this).data('enitity_id');
-
-        $.post($(this).attr('action'), data, function(object) {
-            var container = $('#saas_im_client_form').find('.alert');
-            var alertHeading, containerClass, iconClass;
-
-            if (object.type === 'success') {
-                alertHeading = '{{'Success'|trans}}';
-                containerClass = 'alert-success';
-                iconClass = 'glyphicon-ok';
-            } else if (object.type === 'failure') {
-                alertHeading = '{{'Failure'|trans}}';
-                containerClass = 'alert-danger';
-                iconClass = 'glyphicon-remove';
-            }
-
-            container
-                    .html('')
-                    .append($('<h4>').append($('<div>').addClass('glyphicon ' + iconClass)).append($('<span>').addClass('alert-heading').html(alertHeading)))
-                    .append($('<p>').html(object.content))
-                    .addClass(containerClass)
-                    .fadeIn(400)
-                    .delay(4800)
-                    .fadeOut(1000)
-                    ;
-        }, 'json');
-
         $('.deactivateClient').on('click', function() {
-            alert('aaa');
+            var entityId = $(this).data('entity_id');
+            $('#saas_im_client_deactivation_form').data('entity_id', entityId);
+            $('#saas_im_client_deactivation_form_id').val(entityId);
         });
+
+        $('#add').on('click', function() {
+            $('#saas_im_client_form').trigger('reset');
+            $('#saas_im_client_form').data('entity_id', '');
+            $('#saas_im_client_form input[type="text"]:first').trigger('focus');
+        });
+
+        $('.alert').hide();
+
+        $('.submit-via-ajax').on('submit', function(e) {
+            e.preventDefault();
+            var data = $(this).serialize() + '&entityId=' + $(this).data('entity_id');
+            var originator = $(this).data('originator');
+
+            $.post($(this).attr('action'), data, function(object) {
+                var container = $('#saas_im_client_form').find('.alert');
+                var alertHeading, containerClass, iconClass;
+
+                if (object.type === 'success') {
+                    alertHeading = '{{'Success'|trans}}';
+                    containerClass = 'alert-success';
+                    iconClass = 'glyphicon-ok';
+                } else if (object.type === 'failure') {
+                    alertHeading = '{{'Failure'|trans}}';
+                    containerClass = 'alert-danger';
+                    iconClass = 'glyphicon-remove';
+                }
+
+                container
+                        .html('')
+                        .append($('<h4>').append($('<div>').addClass('glyphicon ' + iconClass)).append($('<span>').addClass('alert-heading').html(alertHeading)))
+                        .append($('<p>').html(object.content))
+                        .addClass(containerClass)
+                        .fadeIn(400)
+                        .delay(4800)
+                        .fadeOut(1000)
+                        ;
+
+                if (originator !== 'self') {
+                    $(originator).modal('hide');
+                }
+
+            }, 'json');
+
+        });
+
     });
 
     function highlight(obj) {
