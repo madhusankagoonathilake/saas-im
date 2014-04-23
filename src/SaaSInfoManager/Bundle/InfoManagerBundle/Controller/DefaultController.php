@@ -8,9 +8,6 @@ use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository;
 use SaaSInfoManager\Bundle\CoreBundle\Entity\TemplateMessage;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientType;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientDeactivationType;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,7 +80,7 @@ class DefaultController extends Controller {
 
             $message = new TemplateMessage('success', 'Client details saved');
         } else {
-            $message = new TemplateMessage('error', 'Failed to save client');
+            $message = new TemplateMessage('failure', 'Failed to save client');
         }
 
         return new Response($this->serialize($message));
@@ -112,7 +109,7 @@ class DefaultController extends Controller {
 
             $message = new TemplateMessage('success', 'Client deactivated');
         } else {
-            $message = new TemplateMessage('error', 'Failed to deactivate client');
+            $message = new TemplateMessage('failure', 'Failed to deactivate client');
         }
 
         return new Response($this->serialize($message));
@@ -166,10 +163,7 @@ class DefaultController extends Controller {
      * @param type $content
      */
     protected function serialize($content) {
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
-
-        $serializer = new Serializer($normalizers, $encoders);
+        $serializer = $this->get('jms_serializer');
         return $serializer->serialize($content, 'json');
     }
 

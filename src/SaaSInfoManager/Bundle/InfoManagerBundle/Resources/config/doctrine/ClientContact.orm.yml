@@ -1,0 +1,44 @@
+SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact:
+    type: entity
+    table: client_contact
+    repositoryClass: SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContactRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        firstName:
+            type: string
+            length: '100'
+            column: first_name
+        lastName:
+            type: string
+            length: '100'
+            column: last_name
+        jobTitle:
+            type: string
+            length: '100'
+            column: job_title
+        contactNumber:
+            type: string
+            length: '20'
+            column: contact_number
+        email:
+            type: string
+            length: '100'
+        isDefault:
+            type: boolean
+            column: is_default
+            default: false
+        clientId:
+            type: integer
+            column: client_id
+    oneToOne:
+        client:
+          targetEntity: SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client
+          joinColumn:
+            name: client_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

@@ -6,3 +6,13 @@ body {
     margin-top: 6px; 
     margin-right: 2px; 
 }
+
+@media (min-width: 768px) {
+    .dl-horizontal dt {
+        width: 70px;
+    }
+
+    .dl-horizontal dd {
+        margin-left: 80px;
+    }
+}

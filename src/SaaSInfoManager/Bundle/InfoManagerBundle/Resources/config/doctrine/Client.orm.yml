@@ -32,6 +32,11 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
             type: string
             length: '2'
             column: country_code
+        industryId:
+            type: integer
+            notnull: false
+            default: null
+            column: industry_id
         status:
             type: integer
             default: 1
@@ -41,4 +46,14 @@ SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client:
           joinColumn:
             name: country_code
             referencedColumnName: code
+        industry:
+          targetEntity: SaaSInfoManager\Bundle\CoreBundle\Entity\Industry
+          joinColumn:
+            name: industry_id
+            referencedColumnName: id
+    oneToMany:
+        contacts:
+          targetEntity: SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact
+          mappedBy: client
+
     lifecycleCallbacks: {  }

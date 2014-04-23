@@ -304,4 +304,105 @@ class Client
     {
         return $this->status;
     }
+    /**
+     * @var integer
+     */
+    private $industryId;
+
+    /**
+     * @var \SaaSInfoManager\Bundle\CoreBundle\Entity\Industry
+     */
+    private $industry;
+
+
+    /**
+     * Set industryId
+     *
+     * @param integer $industryId
+     * @return Client
+     */
+    public function setIndustryId($industryId)
+    {
+        $this->industryId = $industryId;
+
+        return $this;
+    }
+
+    /**
+     * Get industryId
+     *
+     * @return integer 
+     */
+    public function getIndustryId()
+    {
+        return $this->industryId;
+    }
+
+    /**
+     * Set industry
+     *
+     * @param \SaaSInfoManager\Bundle\CoreBundle\Entity\Industry $industry
+     * @return Client
+     */
+    public function setIndustry(\SaaSInfoManager\Bundle\CoreBundle\Entity\Industry $industry = null)
+    {
+        $this->industry = $industry;
+
+        return $this;
+    }
+
+    /**
+     * Get industry
+     *
+     * @return \SaaSInfoManager\Bundle\CoreBundle\Entity\Industry 
+     */
+    public function getIndustry()
+    {
+        return $this->industry;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $contacts;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->contacts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add contacts
+     *
+     * @param \SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact $contacts
+     * @return Client
+     */
+    public function addContact(\SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact $contacts)
+    {
+        $this->contacts[] = $contacts;
+
+        return $this;
+    }
+
+    /**
+     * Remove contacts
+     *
+     * @param \SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact $contacts
+     */
+    public function removeContact(\SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact $contacts)
+    {
+        $this->contacts->removeElement($contacts);
+    }
+
+    /**
+     * Get contacts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
 }

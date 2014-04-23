@@ -7,7 +7,7 @@
     <div class="col-lg-12 h3">
         <span class="glyphicon glyphicon-user"></span>
         <span>{{ 'Clients'|trans }}</span>
-        <button class="btn btn-primary" id="add">{{ 'Add'|trans }}</button>
+        <button class="btn btn-success" id="add">{{ 'Add'|trans }}</button>
     </div>
 </div>
 
@@ -39,14 +39,14 @@
 
     {% endfor %}
         <a href="#" class="list-group-item list-group-item-info" id="noResultsNotice">
-            <h4 class="list-group-item-heading">No matching results.</h4>
-            <p class="list-group-item-text">Try a differnt search.</p>
+            <h4 class="list-group-item-heading">{{ 'No matching results.'|trans }}</h4>
+            <p class="list-group-item-text">{{ 'Try a differnt search.'|trans }}</p>
         </a>
 
 {% else %}
         <a href="#" class="list-group-item list-group-item-info">
-            <h4 class="list-group-item-heading">No clients found.</h4>
-            <p class="list-group-item-text">Click the "Add" button to add new clients.</p>
+            <h4 class="list-group-item-heading">{{ 'No clients found.'|trans }}</h4>
+            <p class="list-group-item-text">{{ 'Click the "Add" button to add new clients.'|trans }}</p>
         </a>
 {% endif %}
     </div>
@@ -80,13 +80,87 @@
 {{ form_end(clientForm, { 'render_rest': false }) }}
 </div>
 <div class="col-lg-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 id="contacts" class="panel-title">{{ 'Contacts'|trans }}</h3>
-
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>{{ 'Contacts'|trans }}</strong>
+            <span class="badge" data-context="contacts_META_count">1</span>
         </div>
-        <div class="panel-body">
-            Panel content
+        <a href="#" class="list-group-item load-via-ajax" data-target="#">
+
+            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Remove'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
+            <strong class="list-group-item-text">
+                <span data-context="contacts_ATTR_first_name"></span>
+                <span data-context="contacts_ATTR_last_name"></span>
+            </strong>
+            <br />
+            <span class="list-group-item-text" data-context="contacts_ATTR_job_title"></span>
+            <br />
+            <p class="list-group-item-text small">
+                <span class="glyphicon glyphicon-phone-alt small"></span>
+                <span data-context="contacts_ATTR_contact_number"></span>
+                <span class="glyphicon glyphicon-envelope small"></span>
+                <span data-context="contacts_ATTR_email"></span>
+            </p>
+        </a>
+        
+        <a href="#" class="list-group-item list-group-item-info" id="noResultsNotice" style="display: block;">
+            <h4 class="list-group-item-heading">{{ 'No contacts found.'|trans }}</h4>
+            <p class="list-group-item-text">{{ 'Click the "Add" button to add new contacts.'|trans }}</p>
+        </a>
+        <div class="list-group-item text-right">
+            <button class="btn btn-xs btn-success">{{ 'Add'|trans }}</button>
+            <button class="btn btn-xs btn-primary">{{ 'View All'|trans }}</button>
+        </div>
+    </div>
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>{{ 'Product Billing'|trans }}</strong>
+            <span class="badge">1</span>
+        </div>
+        <a href="#" class="list-group-item load-via-ajax" data-target="#">
+
+            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Decomission'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
+            <strong class="list-group-item-text">OrangeHRM Professional</strong>
+
+            <p class="list-group-item-text small">
+                <span class="glyphicon glyphicon-info-sign small"></span>
+                <span>Version 4.0.1. Includes customization</span>
+                <br />
+                <span class="glyphicon glyphicon-calendar small"></span>
+                <span>Subscription ends on 2015-03-31</span>
+                <br />
+                <span class="glyphicon glyphicon-cog small"></span>
+                <span>Hosted on cloud</span>
+            </p>
+        </a>
+        <div class="list-group-item text-right">
+            <button class="btn btn-xs btn-success">{{ 'Add'|trans }}</button>
+            <button class="btn btn-xs btn-primary">{{ 'View All'|trans }}</button>
+        </div>
+    </div>
+
+    <div class="list-group">
+        <div class="list-group-item">
+            <strong>{{ 'Activity Log'|trans }}</strong>
+        </div>
+
+        <div class="list-group-item">
+            <dl class="dl-horizontal small">
+                <dt>2014-02-28</dt>
+                <dd>Upgraded to verion 4.0.3</dd>
+                <dt>2014-02-25</dt>
+                <dd>Upgrade request confirmed by Sales</dd>
+                <dt>2014-02-25</dt>
+                <dd>Contacted sales for the upgrade confirmation</dd>
+                <dt>2014-02-20</dt>
+                <dd>Received the payment for support subscription</dd>
+                <dt>2014-02-18</dt>
+                <dd>Sent notification to renew support plans</dd>
+            </dl>
+        </div>
+
+        <div class="list-group-item text-right">
+            <button class="btn btn-xs btn-primary">{{ 'View Complete Log'|trans }}</button>
         </div>
     </div>
 </div>
@@ -179,7 +253,18 @@
             var target = $(this).data('target');
             $.getJSON($(this).attr('href'), null, function(object) {
                 $.each(object, function(property, value) {
-                    $('#' + target + '_' + property).val(value);
+                    if($.isArray(value)) {
+                        var childCount = value.length;
+                        $('span[data-context="' + property + '_META_count"]').html(childCount);
+                        
+                        $.each(value, function(index, childObject) {
+                            $.each(childObject, function(a, b) {
+                                $('span[data-context="' + property + '_ATTR_' + a + '"]').html(b);
+                            });
+                        });
+                    } else {
+                        $('#' + target + '_' + property).val(value);
+                    }
                 });
                 $('#' + target).data('entity_id', object.id);
             });

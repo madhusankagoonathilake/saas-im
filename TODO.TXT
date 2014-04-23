@@ -1,0 +1,5 @@
+Features
+========
+Add the following fields to the 'Client' entity:
+    * Industry
+    * Size (Number of employees)
