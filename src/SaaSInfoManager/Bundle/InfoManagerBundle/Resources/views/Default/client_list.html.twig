@@ -83,11 +83,10 @@
     <div class="list-group">
         <div class="list-group-item">
             <strong>{{ 'Contacts'|trans }}</strong>
-            <span class="badge" data-context="contacts_META_count">1</span>
+            <span class="badge" data-context="contacts_META_count">0</span>
         </div>
-        <a href="#" class="list-group-item load-via-ajax" data-target="#">
+        <a href="#" class="list-group-item load-via-ajax" data-target="#" data-container="contacts_CONTAINER_list_item">
 
-            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Remove'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
             <strong class="list-group-item-text">
                 <span data-context="contacts_ATTR_first_name"></span>
                 <span data-context="contacts_ATTR_last_name"></span>
@@ -103,13 +102,14 @@
             </p>
         </a>
         
-        <a href="#" class="list-group-item list-group-item-info" id="noResultsNotice" style="display: block;">
+        <a href="#" class="list-group-item list-group-item-info" data-container="contacts_CONTAINER_no_results_notice">
             <h4 class="list-group-item-heading">{{ 'No contacts found.'|trans }}</h4>
             <p class="list-group-item-text">{{ 'Click the "Add" button to add new contacts.'|trans }}</p>
         </a>
+        
         <div class="list-group-item text-right">
-            <button class="btn btn-xs btn-success">{{ 'Add'|trans }}</button>
-            <button class="btn btn-xs btn-primary">{{ 'View All'|trans }}</button>
+            <button class="btn btn-xs btn-success" data-context="contacts_BTN_add">{{ 'Add'|trans }}</button>
+            <button class="btn btn-xs btn-primary" data-context="contacts_BTN_view_all">{{ 'View All'|trans }}</button>
         </div>
     </div>
     <div class="list-group">
@@ -209,8 +209,13 @@
     }
 </style>
 <script type="text/javascript">
+    var subject = null;
+    
     $(document).ready(function() {
         $('#noResultsNotice').hide();
+        $('a[data-container$="_CONTAINER_list_item"]').hide();
+        $('button[data-context$="_BTN_add"]').prop('disabled', true);
+        $('button[data-context$="_BTN_view_all"]').hide();
 
         $('#search').on('keyup', function() {
             var key = $(this).val();
@@ -252,15 +257,38 @@
             e.preventDefault();
             var target = $(this).data('target');
             $.getJSON($(this).attr('href'), null, function(object) {
+                subject = object;
+                
                 $.each(object, function(property, value) {
                     if($.isArray(value)) {
                         var childCount = value.length;
                         $('span[data-context="' + property + '_META_count"]').html(childCount);
                         
+                        $('button[data-context="' + property + '_BTN_add"]').prop('disabled', false);
+                        
+                        if (childCount === 0) {
+                            $('a[data-container="' + property + '_CONTAINER_no_results_notice"]').show();
+                            $('a[data-container="' + property + '_CONTAINER_list_item"]').hide();
+                            $('button[data-context="' + property + '_BTN_view_all"]').hide();
+                        } else {
+                            if (childCount === 1) {
+                                $('button[data-context="' + property + '_BTN_view_all"]').hide();
+                            } else {
+                                $('button[data-context="' + property + '_BTN_view_all"]').show();
+                            }
+                            
+                            $('a[data-container="' + property + '_CONTAINER_no_results_notice"]').hide();
+                            $('a[data-container="' + property + '_CONTAINER_list_item"]').show();
+                        }
+                        
                         $.each(value, function(index, childObject) {
-                            $.each(childObject, function(a, b) {
-                                $('span[data-context="' + property + '_ATTR_' + a + '"]').html(b);
+                            $.each(childObject, function(childProperty, childPropertyValue) {
+                                $('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
                             });
+                            
+                            if (childObject['is_default'] !== undefined && childObject['is_default'] === true) {
+                                return false;
+                            }
                         });
                     } else {
                         $('#' + target + '_' + property).val(value);
