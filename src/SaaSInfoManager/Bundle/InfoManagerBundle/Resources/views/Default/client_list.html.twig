@@ -25,7 +25,9 @@
         <a href="{{ path('saas_info_manager_client_info', { 'id': client.id }) }}" class="list-group-item search-list-item load-via-ajax" data-target="saas_im_client_form">
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
-            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="{{ client.id }}">&times;</button>
+
+            <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_action="deactivateClient" data-entity_id="{{ client.id }}">&times;</button>
+
             <p class="list-group-item-text small">
                 <span class="glyphicon glyphicon-phone-alt small"></span>
                 <span>{{ client.contactNumber }}</span>
@@ -35,6 +37,7 @@
                 <span class="glyphicon glyphicon-globe small"></span>
                 <span>{{ client.country.name }}</span>
             </p>
+
         </a>
 
     {% endfor %}
@@ -119,7 +122,7 @@
         </div>
         <a href="#" class="list-group-item load-via-ajax" data-target="#">
 
-            <button type="button" class="close deactivateClient" aria-hidden="true" title="{{ 'Decomission'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
+            <button type="button" class="close" aria-hidden="true" title="{{ 'Decomission'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
             <strong class="list-group-item-text">OrangeHRM Professional</strong>
 
             <p class="list-group-item-text small">
@@ -200,6 +203,8 @@
                 <div class="list-group" data-container="contacts_MODAL_PANEL">
 
                     <div class="list-group-item" data-target="#" data-container="contacts_CONTAINER_list_item">
+                        <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_action="removeClientContact" data-entity_id="">&times;</button>
+
                         <strong class="list-group-item-text">
                             <span data-context="contacts_ATTR_first_name"></span>
                             <span data-context="contacts_ATTR_last_name"></span>
@@ -291,7 +296,9 @@
 
         $('.load-via-ajax').on('click', function(e) {
             e.preventDefault();
+
             var target = $(this).data('target');
+
             $.getJSON($(this).attr('href'), null, function(object) {
                 subject = object;
 
@@ -351,7 +358,7 @@
             });
         });
 
-        $('.deactivateClient').on('click', function() {
+        $('button[data-entity_action="deactivateClient"]').on('click', function() {
             var entityId = $(this).data('entity_id');
             $('#saas_im_client_deactivation_form').data('entity_id', entityId);
             $('#saas_im_client_deactivation_form_id').val(entityId);
