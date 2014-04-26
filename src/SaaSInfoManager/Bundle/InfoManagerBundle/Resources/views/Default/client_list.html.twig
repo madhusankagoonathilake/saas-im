@@ -64,11 +64,11 @@
         <div class="panel-body">
             <div class="alert"></div>
             {{ form_row(clientForm.email, { 'label': 'Email'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Email Address'|trans } }) }}
-            {{ form_row(clientForm.contactNumber, { 'label': 'Contact Number'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'General Contact Number'|trans } }) }}
+            {{ form_row(clientForm.contactNumber, { 'label': 'Contact Number'|trans, 'attr': { 'id': 'saas_im_client_form_contact_number', 'class': 'form-control editable editable-style', 'placeholder': 'General Contact Number'|trans } }) }}
             {{ form_row(clientForm.address1, { 'label': 'Address'|trans, 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 1'|trans } }) }}
             {{ form_widget(clientForm.address2, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 2'|trans } }) }}
             {{ form_widget(clientForm.city, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'City'|trans } }) }}
-            {{ form_row(clientForm.countryCode, { 'label': 'Country'|trans, 'attr': { 'class': 'form-control editable editable-style' } }) }}
+            {{ form_row(clientForm.countryCode, { 'label': 'Country'|trans, 'attr': { 'id': 'saas_im_client_form_country_code', 'class': 'form-control editable editable-style' } }) }}
         </div>
         <div class="panel-footer text-right">
             <div class="">
@@ -80,12 +80,12 @@
 {{ form_end(clientForm, { 'render_rest': false }) }}
 </div>
 <div class="col-lg-4">
-    <div class="list-group">
+    <div class="list-group" data-container="contacts_PAGE_PANEL">
         <div class="list-group-item">
             <strong>{{ 'Contacts'|trans }}</strong>
             <span class="badge" data-context="contacts_META_count">0</span>
         </div>
-        <a href="#" class="list-group-item load-via-ajax" data-target="#" data-container="contacts_CONTAINER_list_item">
+        <a href="#" class="list-group-item" data-toggle="modal" data-target="#clientContactsModal" data-container="contacts_CONTAINER_list_item">
 
             <strong class="list-group-item-text">
                 <span data-context="contacts_ATTR_first_name"></span>
@@ -101,15 +101,15 @@
                 <span data-context="contacts_ATTR_email"></span>
             </p>
         </a>
-        
+
         <a href="#" class="list-group-item list-group-item-info" data-container="contacts_CONTAINER_no_results_notice">
             <h4 class="list-group-item-heading">{{ 'No contacts found.'|trans }}</h4>
             <p class="list-group-item-text">{{ 'Click the "Add" button to add new contacts.'|trans }}</p>
         </a>
-        
+
         <div class="list-group-item text-right">
             <button class="btn btn-xs btn-success" data-context="contacts_BTN_add">{{ 'Add'|trans }}</button>
-            <button class="btn btn-xs btn-primary" data-context="contacts_BTN_view_all">{{ 'View All'|trans }}</button>
+            <button class="btn btn-xs btn-primary" data-context="contacts_BTN_view_all" data-toggle="modal" data-target="#clientContactsModal">{{ 'View All'|trans }}</button>
         </div>
     </div>
     <div class="list-group">
@@ -189,6 +189,42 @@
     {{ form_end(clientDeactivationForm, { 'render_rest': false }) }}
 </div>
 
+<div class="modal fade" id="clientContactsModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{ 'Contacts'|trans }}: <span>Client Name</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="list-group" data-container="contacts_MODAL_PANEL">
+
+                    <div class="list-group-item" data-target="#" data-container="contacts_CONTAINER_list_item">
+                        <strong class="list-group-item-text">
+                            <span data-context="contacts_ATTR_first_name"></span>
+                            <span data-context="contacts_ATTR_last_name"></span>
+                        </strong>
+                        <br>
+                        <span class="list-group-item-text" data-context="contacts_ATTR_job_title"></span>
+                        <br>
+                        <p class="list-group-item-text">
+                            <span class="glyphicon glyphicon-phone-alt small"></span>
+                            <span data-context="contacts_ATTR_contact_number"></span>
+                            <span class="glyphicon glyphicon-envelope small"></span>
+                            <span data-context="contacts_ATTR_email"></span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">{{ 'Save'|trans }}</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
@@ -210,7 +246,7 @@
 </style>
 <script type="text/javascript">
     var subject = null;
-    
+
     $(document).ready(function() {
         $('#noResultsNotice').hide();
         $('a[data-container$="_CONTAINER_list_item"]').hide();
@@ -258,14 +294,14 @@
             var target = $(this).data('target');
             $.getJSON($(this).attr('href'), null, function(object) {
                 subject = object;
-                
+
                 $.each(object, function(property, value) {
-                    if($.isArray(value)) {
+                    if ($.isArray(value)) {
                         var childCount = value.length;
                         $('span[data-context="' + property + '_META_count"]').html(childCount);
-                        
+
                         $('button[data-context="' + property + '_BTN_add"]').prop('disabled', false);
-                        
+
                         if (childCount === 0) {
                             $('a[data-container="' + property + '_CONTAINER_no_results_notice"]').show();
                             $('a[data-container="' + property + '_CONTAINER_list_item"]').hide();
@@ -276,22 +312,39 @@
                             } else {
                                 $('button[data-context="' + property + '_BTN_view_all"]').show();
                             }
-                            
+
                             $('a[data-container="' + property + '_CONTAINER_no_results_notice"]').hide();
                             $('a[data-container="' + property + '_CONTAINER_list_item"]').show();
                         }
-                        
+
+                        var pagePanel = $('div[data-container="' + property + '_PAGE_PANEL"]');
+                        var modalPanel = $('div[data-container="' + property + '_MODAL_PANEL"]');
+                        var listItemTemplate = modalPanel.find('div.list-group-item:first');
+
+                        listItemTemplate.hide();
+                        listItemTemplate.nextAll('div.list-group-item').remove();
+
                         $.each(value, function(index, childObject) {
+
+                            var listItem = listItemTemplate.clone();
+
                             $.each(childObject, function(childProperty, childPropertyValue) {
-                                $('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
+                                if (index === 0 || (childObject['is_default'] !== undefined && childObject['is_default'] === true)) {
+                                    pagePanel.find('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
+
+                                }
+                                listItem.find('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
                             });
-                            
-                            if (childObject['is_default'] !== undefined && childObject['is_default'] === true) {
-                                return false;
-                            }
+
+                            listItem.show();
+                            modalPanel.append(listItem);
+
                         });
                     } else {
-                        $('#' + target + '_' + property).val(value);
+                        var camelizedProperty = property.replace(/(?:\s|[_])\w/g, function(match) {
+                            return match.toUpperCase();
+                        }).replace(/_/g, '');
+                        $('#' + target + '_' + camelizedProperty).val(value);
                     }
                 });
                 $('#' + target).data('entity_id', object.id);
