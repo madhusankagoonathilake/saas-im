@@ -26,10 +26,10 @@
 
             <span class="h4 list-group-item-heading">{{ client.name }}</span>
 
-            <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_action="deactivateClient" data-entity_id="{{ client.id }}">&times;</button>
+            <button type="button" class="close small" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_action="deactivateClient" data-entity_id="{{ client.id }}">&times;</button>
 
             <p class="list-group-item-text small">
-                <span class="glyphicon glyphicon-phone-alt small"></span>
+                <span class="glyphicon glyphicon-earphone small"></span>
                 <span>{{ client.contactNumber }}</span>
                 <span class="glyphicon glyphicon-envelope small"></span>
                 <span>{{ client.email }}</span>
@@ -98,7 +98,7 @@
             <span class="list-group-item-text" data-context="contacts_ATTR_job_title"></span>
             <br />
             <p class="list-group-item-text small">
-                <span class="glyphicon glyphicon-phone-alt small"></span>
+                <span class="glyphicon glyphicon-earphone small"></span>
                 <span data-context="contacts_ATTR_contact_number"></span>
                 <span class="glyphicon glyphicon-envelope small"></span>
                 <span data-context="contacts_ATTR_email"></span>
@@ -122,7 +122,6 @@
         </div>
         <a href="#" class="list-group-item load-via-ajax" data-target="#">
 
-            <button type="button" class="close" aria-hidden="true" title="{{ 'Decomission'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_id="">&times;</button>
             <strong class="list-group-item-text">OrangeHRM Professional</strong>
 
             <p class="list-group-item-text small">
@@ -168,7 +167,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="clientDeactivationModal">
+<div class="modal fade" id="clientDeactivationModal" tabindex="-1">
     {{ form_start(clientDeactivationForm, { 'attr': { 'role': 'form', 'data-entity_id': '', 'data-originator': '#clientDeactivationModal', 'class': 'submit-via-ajax' } }) }}
     {{ form_widget(clientDeactivationForm._token) }}
     {{ form_widget(clientDeactivationForm.id) }}
@@ -176,7 +175,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">{{ 'Confirm Client Deactivation'|trans }}</h4>
             </div>
             <div class="modal-body">
@@ -192,18 +190,17 @@
     {{ form_end(clientDeactivationForm, { 'render_rest': false }) }}
 </div>
 
-<div class="modal fade" id="clientContactsModal">
+<div class="modal fade" id="clientContactsModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{ 'Contacts'|trans }}: <span>Client Name</span></h4>
+                <h4 class="modal-title"><span data-context="name">Client</span> : {{ 'Contacts'|trans }}</h4>
             </div>
             <div class="modal-body">
                 <div class="list-group" data-container="contacts_MODAL_PANEL">
 
                     <div class="list-group-item" data-target="#" data-container="contacts_CONTAINER_list_item">
-                        <button type="button" class="close" aria-hidden="true" title="{{ 'Deactivate'|trans }}" data-toggle="modal" data-target="#clientDeactivationModal" data-entity_action="removeClientContact" data-entity_id="">&times;</button>
+                        <button type="button" class="close" aria-hidden="true" title="{{ 'Remove'|trans }}" data-entity_action="removeClientContact" data-entity_id="">&times;</button>
 
                         <strong class="list-group-item-text">
                             <span data-context="contacts_ATTR_first_name"></span>
@@ -213,7 +210,7 @@
                         <span class="list-group-item-text" data-context="contacts_ATTR_job_title"></span>
                         <br>
                         <p class="list-group-item-text">
-                            <span class="glyphicon glyphicon-phone-alt small"></span>
+                            <span class="glyphicon glyphicon-earphone small"></span>
                             <span data-context="contacts_ATTR_contact_number"></span>
                             <span class="glyphicon glyphicon-envelope small"></span>
                             <span data-context="contacts_ATTR_email"></span>
@@ -352,6 +349,7 @@
                             return match.toUpperCase();
                         }).replace(/_/g, '');
                         $('#' + target + '_' + camelizedProperty).val(value);
+                        $('span[data-context="' + property + '"]').html(value);
                     }
                 });
                 $('#' + target).data('entity_id', object.id);
