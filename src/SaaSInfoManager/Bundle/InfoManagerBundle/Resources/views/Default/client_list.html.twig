@@ -72,6 +72,7 @@
             {{ form_widget(clientForm.address2, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Address 2'|trans } }) }}
             {{ form_widget(clientForm.city, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'City'|trans } }) }}
             {{ form_row(clientForm.countryCode, { 'label': 'Country'|trans, 'attr': { 'id': 'saas_im_client_form_country_code', 'class': 'form-control editable editable-style' } }) }}
+            {{ form_row(clientForm.industryId, { 'label': 'Industry'|trans, 'attr': { 'id': 'saas_im_client_form_industry_id', 'class': 'form-control editable editable-style' } }) }}
         </div>
         <div class="panel-footer text-right">
             <div class="">
@@ -193,8 +194,11 @@
 <div class="modal fade" id="clientContactsModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
+            {{ form_start(clientContactsForm, { 'attr': { 'role': 'form', 'data-entity_id': '', 'data-originator': '#clientContactsModal', 'class': 'form-inline submit-via-ajax' } }) }}
+            {{ form_widget(clientContactsForm._token) }}
+
             <div class="modal-header">
-                <h4 class="modal-title"><span data-context="name">Client</span> : {{ 'Contacts'|trans }}</h4>
+                <h4 class="modal-title"><span data-context="name">{{ 'Client'|trans }}</span> : {{ 'Contacts'|trans }}</h4>
             </div>
             <div class="modal-body">
                 <div class="list-group" data-container="contacts_MODAL_PANEL">
@@ -203,26 +207,29 @@
                         <button type="button" class="close" aria-hidden="true" title="{{ 'Remove'|trans }}" data-entity_action="removeClientContact" data-entity_id="">&times;</button>
 
                         <strong class="list-group-item-text">
-                            <span data-context="contacts_ATTR_first_name"></span>
-                            <span data-context="contacts_ATTR_last_name"></span>
+                            <span>{{ form_widget(clientContactsForm.firstName, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'First Name'|trans, 'data-context': 'contacts_ATTR_first_name' } }) }}</span>
+                            <span>{{ form_widget(clientContactsForm.lastName, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Last Name'|trans, 'data-context': 'contacts_ATTR_last_name' } }) }}</span>
                         </strong>
                         <br>
-                        <span class="list-group-item-text" data-context="contacts_ATTR_job_title"></span>
+                        <span class="list-group-item-text">{{ form_widget(clientContactsForm.jobTitle, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Job Title'|trans, 'data-context': 'contacts_ATTR_job_title' } }) }}</span>
                         <br>
                         <p class="list-group-item-text">
                             <span class="glyphicon glyphicon-earphone small"></span>
-                            <span data-context="contacts_ATTR_contact_number"></span>
+                            <span>{{ form_widget(clientContactsForm.contactNumber, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Contact Number'|trans, 'data-context': 'contacts_ATTR_contact_number' } }) }}</span>
                             <span class="glyphicon glyphicon-envelope small"></span>
-                            <span data-context="contacts_ATTR_email"></span>
+                            <span>{{ form_widget(clientContactsForm.email, { 'attr': { 'class': 'form-control editable editable-style', 'placeholder': 'Email Address'|trans, 'data-context': 'contacts_ATTR_email' } }) }}</span>
                         </p>
                     </div>
+
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">{{ 'Save'|trans }}</button>
+                {{ form_widget(clientContactsForm.submit, { 'attr' : { 'class': 'btn btn-primary' } }) }}
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Close'|trans }}</button>
             </div>
+
+            {{ form_end(clientContactsForm, { 'render_rest': false }) }}
         </div>
     </div>
 </div>
@@ -330,18 +337,17 @@
 
                         $.each(value, function(index, childObject) {
 
-                            var listItem = listItemTemplate.clone();
+                            var listItem = listItemTemplate.clone(true);
 
                             $.each(childObject, function(childProperty, childPropertyValue) {
                                 if (index === 0 || (childObject['is_default'] !== undefined && childObject['is_default'] === true)) {
                                     pagePanel.find('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
-
                                 }
-                                listItem.find('span[data-context="' + property + '_ATTR_' + childProperty + '"]').html(childPropertyValue);
+                                listItem.find(':input[data-context="' + property + '_ATTR_' + childProperty + '"]').val(childPropertyValue);
                             });
 
                             listItem.show();
-                            modalPanel.append(listItem);
+                            listItemTemplate.parent().append(listItem);
 
                         });
                     } else {
@@ -371,7 +377,9 @@
         $('.alert').hide();
 
         $('.submit-via-ajax').on('submit', function(e) {
+            alert('aaa')
             e.preventDefault();
+            alert('bbb')
             var data = $(this).serialize() + '&entityId=' + $(this).data('entity_id');
             var originator = $(this).data('originator');
 

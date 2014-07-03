@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository;
 
-class ClientType extends AbstractType {
+class ClientContactsType extends AbstractType {
 
     /**
      * @param FormBuilderInterface $builder
@@ -17,28 +17,21 @@ class ClientType extends AbstractType {
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-                ->add('name', 'text', array(
+                ->add('firstName', 'text', array(
                     'constraints' => array(
                         new Length(array('min' => 3, 'max' => 100)),
                         new NotBlank(),
                     ),
                 ))
+                ->add('lastName', 'text', array(
+                    'constraints' => array(
+                        new Length(array('min' => 3, 'max' => 100)),
+                        new NotBlank(),
+                    ),
+                ))
+                ->add('jobTitle', 'text')
                 ->add('email', 'email')
                 ->add('contactNumber')
-                ->add('address1')
-                ->add('address2')
-                ->add('city')
-                ->add('countryCode', 'country', array(
-                    'empty_value' => '---',
-                ))
-                ->add('industryId', 'entity', array(
-                    'empty_value' => '---',
-                    'class' => 'SaaSInfoManagerCoreBundle:Industry',
-                    'property' => 'name',
-                ))
-                ->add('status', 'hidden', array(
-                    'data' => ClientRepository::ACTIVE
-                ))
         ;
     }
 
@@ -47,7 +40,7 @@ class ClientType extends AbstractType {
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         $resolver->setDefaults(array(
-            'data_class' => 'SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client'
+            'data_class' => 'SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientContact'
         ));
     }
 
@@ -55,7 +48,7 @@ class ClientType extends AbstractType {
      * @return string
      */
     public function getName() {
-        return 'saas_im_client_form';
+        return 'saas_im_client_contacts_form';
     }
 
 }

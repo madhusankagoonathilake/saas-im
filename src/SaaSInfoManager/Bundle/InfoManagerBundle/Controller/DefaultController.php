@@ -7,6 +7,7 @@ use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\Client;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Entity\ClientRepository;
 use SaaSInfoManager\Bundle\CoreBundle\Entity\TemplateMessage;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientType;
+use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientContactsType;
 use SaaSInfoManager\Bundle\InfoManagerBundle\Form\ClientDeactivationType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,16 +31,18 @@ class DefaultController extends Controller {
         $em = $this->getDoctrine()->getManager();
 
         $clientForm = $this->createClientForm();
+        $clientContactsForm = $this->createClientContactsForm();
         $clientDeactivationForm = $this->createClientDeactivationForm();
         $clientList = $em->getRepository('SaaSInfoManagerInfoManagerBundle:Client')->findBy(array(
             'status' => ClientRepository::ACTIVE,
-        ), array(
+                ), array(
             'name' => 'ASC',
         ));
 
         return $this->render('SaaSInfoManagerInfoManagerBundle:Default:client_list.html.twig', array(
                     'clientList' => $clientList,
                     'clientForm' => $clientForm->createView(),
+                    'clientContactsForm' => $clientContactsForm->createView(),
                     'clientDeactivationForm' => $clientDeactivationForm->createView(),
         ));
     }
@@ -74,6 +77,13 @@ class DefaultController extends Controller {
 
             $country = $em->getRepository('SaaSInfoManagerCoreBundle:Country')->find($client->getCountryCode());
             $client->setCountry($country);
+            echo 'aaa';
+            die;
+//            $industryId = $client->getIndustryId();
+//            if (!is_null($industryId)) {
+//                $industry = $em->getRepository('SaaSInfoManagerCoreBundle:Industry')->find($industryId);
+//                $client->setIndustry($industry);
+//            }
 
             $em->persist($client);
             $em->flush();
@@ -117,6 +127,17 @@ class DefaultController extends Controller {
 
     /**
      * 
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function saveClientContactsAction(Request $request) {
+
+        $message = new TemplateMessage('success', 'Client contacts saved');
+        return new Response($this->serialize($message));
+    }
+
+    /**
+     * 
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function viewCommodityListAction() {
@@ -141,7 +162,24 @@ class DefaultController extends Controller {
 
         return $clientForm;
     }
-    
+
+    /**
+     * 
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function createClientContactsForm() {
+        $clientContactsForm = $this->createForm(new ClientContactsType(), null, array(
+            'action' => $this->generateUrl('saas_info_manager_save_client_contacts'),
+            'method' => 'POST',
+            'attr' => array(
+                'id' => 'saas_im_client_contacts_form',
+            ),
+        ));
+        $clientContactsForm->add('submit', 'submit', array('label' => 'Save'));
+
+        return $clientContactsForm;
+    }
+
     /**
      * 
      * @return \Symfony\Component\Form\Form
@@ -154,7 +192,7 @@ class DefaultController extends Controller {
                 'id' => 'saas_im_client_deactivation_form',
             ),
         ));
-        
+
         return $clientDeactivationForm;
     }
 

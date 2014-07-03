@@ -12,6 +12,10 @@ saas_info_manager_deactivate_client:
     pattern:  /deactivate-client
     defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:deactivateClient }
     requirements: { _method: post|put }
+saas_info_manager_save_client_contacts:
+    pattern:  /save-client-contacts
+    defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:saveClientContacts }
+    requirements: { _method: post|put }
 saas_info_manager_commodity_list:
     pattern:  /commodity-list
     defaults: { _controller: SaaSInfoManagerInfoManagerBundle:Default:viewCommodityList }
